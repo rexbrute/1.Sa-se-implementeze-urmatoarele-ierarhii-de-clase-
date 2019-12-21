@@ -1,0 +1,301 @@
+#include <math.h>
+#include <string.h>
+#include <stdlib.h>
+#include <iostream>
+#include <tgmath.h>
+#define PI 3.14159
+
+using namespace std;
+
+class figura
+{
+protected:
+char nume[20]; // denumirea figurii
+public: // functii pur virtuale
+virtual float arie() = 0;
+virtual float perimetru() = 0;
+char* getnume()
+{
+return nume;
+
+}
+};
+class Elipsa:public figura{
+
+};
+class cerc:public Elipsa{
+protected:
+    float a,r;
+public:
+    cerc(float A){
+    a=A;
+    r=a/2;
+    };
+    virtual float arie()
+{
+
+return fabs(PI*r*r);
+}
+virtual float perimetru()
+{
+return fabs(2*PI*r);
+}
+
+};
+class Poligon:public figura{
+
+};
+class triunghi:public Poligon{
+protected:
+float a,b,c;
+public:
+triunghi(float A,float B,float C)
+{
+strcpy(nume,"Triunghi");
+a=A;
+b=B;
+c=C;
+};
+virtual float arie()
+{
+float p=(a+b+c)/2;
+return fabs(sqrt(p*(p-a)*(p-b)*(p-c)));
+}
+virtual float perimetru()
+{
+return fabs(a+b+c);
+}
+};
+
+class triunghidreptunghic:public triunghi{
+protected:
+    float a,b,c;
+public:
+triunghidreptunghic(int A,int B,int C):triunghi(A,B,C){
+strcpy(nume,"Triunghi dreptunghic");
+a=A;
+b=B;
+c=C;
+};
+    virtual float arie(){
+        if(a>b&&a>c)
+    return fabs((c*b)/2);
+      if(b>a&&b>c)
+    return fabs((a*c)/2);
+      if(c>b&&c>a)
+    return fabs((a*b)/2);
+    }
+    virtual float perimetru(){
+  return fabs(a+b+c);
+    }
+};
+class triunghiisoscel:public triunghi{
+protected:
+    float a,b,c;
+public:
+triunghiisoscel(float A,float B,float C):triunghi(A,B,C){//float C este doar ca sa ruleze, ma intereseaza doar laturile egale dupa care calcules a treia latura in functie de laturile egale
+strcpy(nume,"Triunghi isoscel");
+a=A;
+b=B;
+C=sqrt(a*a+b*b);
+c=C;
+};
+    virtual float arie(){
+        float h;
+        float j;
+        float minte;
+        if(a==b){
+                minte=c;
+           h=c/2;//jumate din ipotenuza
+            j=sqrt(a*a-h*h);//inaltimea la triunghi isoscel
+        }
+
+        if(b==c) {minte=a;h=a/2;  j=sqrt(pow(b,2)-pow(h,2)); }
+        if(a==c) {minte=b;h=b/2;  j=sqrt(pow(a,2)-pow(h,2)); }
+
+
+
+    return fabs((j*minte)/2);
+    }
+    virtual float perimetru(){
+  return fabs(a+b+c);
+    }
+};
+class triunghidreptunghicisoscel: public triunghidreptunghic,public triunghiisoscel{
+protected:
+    float a,b,c;
+public:
+triunghidreptunghicisoscel(float A,float B,float C):triunghidreptunghic(A,B,C),triunghiisoscel(A,B,C){//float C este doar ca sa ruleze, ma intereseaza doar laturile egale dupa care calcules a treia latura in functie de laturile egale
+
+a=A;
+b=B;
+c=C;
+};
+    virtual float arie(){
+        float h;
+        float j;
+        float minte;
+        if(a==b){
+                minte=c;
+           h=c/2;//jumate din ipotenuza
+            j=sqrt(a*a-h*h);//inaltimea la triunghi isoscel
+        }
+
+        if(b==c) {minte=a;h=a/2;  j=sqrt(pow(b,2)-pow(h,2)); }
+        if(a==c) {minte=b;h=b/2;  j=sqrt(pow(a,2)-pow(h,2)); }
+
+        if(j==0)cout<<"Triunghiul nu este dreptunghic isoscel";
+      else cout<<fabs((j*minte)/2);
+      exit(1);
+
+    }
+    virtual float perimetru(){
+  return fabs(a+b+c);
+    }
+};
+
+class triunghiechilateral:public triunghiisoscel{
+protected:
+    float a,b,c;
+public:
+triunghiechilateral(float A,float B,float C):triunghiisoscel(A,B,C){
+strcpy(nume,"Triunghi echilateral");
+a=A;
+b=B;
+c=C;
+};
+    virtual float arie(){
+    return fabs((pow(a,2)*sqrt(3))/4);
+    }
+    virtual float perimetru(){
+  return fabs(a*3);
+    }
+};
+class patrulater:public Poligon
+{
+protected:
+float a,b,c,d;
+public:
+patrulater(float A,float B,float C,float D)
+{
+strcpy(nume,"Patrulater");
+a=A;
+b=B;
+c=C;
+d=D;
+};
+};
+class dreptunghi: virtual public patrulater // clasa patrulater virtuala
+{
+protected:
+float a,b,c,d;
+public:
+dreptunghi(float A, float B, float C, float D):patrulater(A,B,C,D)
+{
+strcpy(nume,"Dreptunghi");
+a=A;
+b=B;
+c=C;
+d=D;
+};
+virtual float arie()
+{
+return fabs(a*b);
+}
+virtual float perimetru()
+{
+return fabs(a+b+c+d);
+}
+};
+class romb: virtual public patrulater // clasa patrulater virtuala
+{
+protected:
+float a,b,c,d;
+public:
+romb(float A, float B, float C, float D):patrulater(A,B,C,D)
+{
+strcpy(nume,"Romb");
+a=A;
+b=B;
+c=C;
+d=D;
+}
+virtual float arie()
+{
+return a*a*sin(PI/3);
+}
+virtual float perimetru()
+{
+return 4*a;
+}
+};
+class patrat: public dreptunghi, public romb
+{
+protected:
+float a,b,c,d;
+public:
+patrat(float A,float B,float C,float D):dreptunghi(A,B,C,D),
+romb(A,B,C,D),patrulater(A,B,C,D)
+{
+strcpy(nume,"Patrat");
+a=A;
+b=B;
+c=C;
+}
+virtual float arie() // calcul arie patrat ca fiind dreptunghi
+{
+return dreptunghi::arie();
+}
+virtual float perimetru() // calcul perimetru patrat ca fiind romb
+{
+return romb::perimetru();
+}
+};
+int main(void)
+{
+
+dreptunghi d(5,10,5,10);
+romb r(10,15,10,15);
+patrat p(5,5,5,5);
+
+
+cout<<"Aria dreptunghiului: "<<d.arie()<<endl;
+cout<<"Perimetrul dreptunghiului: "<<d.perimetru()<<endl<<endl;
+cout<<"Aria rombului: "<<r.arie()<<endl;
+cout<<"Perimetrul rombului: "<<r.perimetru()<<endl<<endl;
+cout<<"Aria patratului: "<<p.arie()<<endl;
+cout<<"Perimetrul patratului: "<<p.perimetru()<<endl<<endl;
+
+cout<<endl<<endl;
+
+triunghi t(3,4,5);
+cout<<"Aria tri: "<<t.arie()<<endl;
+cout<<"Perimetrul tri: "<<t.perimetru()<<endl<<endl;
+
+cout<<endl<<endl;
+
+triunghidreptunghic s(5,3,4);
+cout<<"Aria tri: "<<s.arie()<<endl;
+cout<<"Perimetrul tri: "<<s.perimetru()<<endl<<endl;
+
+cout<<endl<<endl;
+
+triunghiisoscel u(1,1,sqrt(2));
+cout<<"Aria tri: "<<u.arie()<<endl;
+cout<<"Perimetrul tri: "<<u.perimetru()<<endl<<endl;
+
+
+
+cout<<endl<<endl;
+
+triunghiechilateral S(8,8,8);
+cout<<"Aria tri: "<<S.arie()<<endl;
+cout<<"Perimetrul tri: "<<S.perimetru()<<endl<<endl;
+
+cout<<endl<<endl;
+
+cerc L(12);
+cout<<"Aria cercului: "<<L.arie()<<endl;
+cout<<"Circumferinta cercului: "<<L.perimetru()<<endl<<endl;
+
+}
